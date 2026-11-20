@@ -1,7 +1,7 @@
 /* Keeps the launcher itself available offline. Your data always comes live from Google. */
-var CACHE = 'anara-launcher-v1';
+var CACHE = 'anara-launcher-v2';
 var FILES = ['./', './index.html', './config.js', './manifest.webmanifest',
-  './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png', './icons/logo.png'];
+  './icon-192.png', './icon-512.png', './maskable-512.png', './apple-touch-icon.png', './logo.png'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FILES); }).then(function () { return self.skipWaiting(); }));

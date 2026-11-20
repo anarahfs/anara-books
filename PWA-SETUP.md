@@ -13,7 +13,7 @@ Open **`config.js`** and replace `PASTE_YOUR_WEB_APP_URL_HERE` with your `/exec`
 ## 2. Put it on GitHub Pages (free, about 10 minutes, easiest on a computer)
 1. Create a free account at **github.com**.
 2. Click **＋ → New repository**. Name it `anara-books`, choose **Public**, tick **Add a README file**, then click **Create repository**.
-3. Click **Add file → Upload files** and drag in **everything** from this folder: `index.html`, `config.js`, `manifest.webmanifest`, `sw.js`, and the **icons** folder. Click **Commit changes**.
+3. Click **Add file → Upload files** and select **all the files** from this folder (no sub-folders): `index.html`, `config.js`, `manifest.webmanifest`, `sw.js` and the five `.png` images. Click **Commit changes**.
 4. Go to **Settings → Pages**. Under *Build and deployment*, choose **Deploy from a branch**, set Branch to **main** and the folder to **/ (root)**, then click **Save**.
 5. After 1–2 minutes the page shows your address, e.g. `https://yourname.github.io/anara-books/`. That's the launcher link.
 

@@ -11,6 +11,6 @@
  *   'redirect' — always open the app directly (still from your home-screen icon).
  */
 window.ANARA_CONFIG = {
-  APP_URL: 'PASTE_YOUR_WEB_APP_URL_HERE',
+  APP_URL: 'https://script.google.com/macros/s/AKfycbyTN9VzFhshYhI3HBm_FIIehIOUDzbMceEdOccfA4ncaIsNmsbwHAeKrCsOGjBbII_J/exec',
   MODE: 'auto'
 };
