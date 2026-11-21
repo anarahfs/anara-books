@@ -2,10 +2,14 @@
 var CACHE = 'anara-launcher-v3';
 var FILES = ['./', './index.html', './config.js', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './maskable-512.png', './apple-touch-icon.png', './logo.png',
-  './quick/', './quick/index.html', './quick/manifest.webmanifest', './quick/icon-192.png', './quick/icon-512.png', './quick/maskable-512.png', './quick/apple-touch-icon.png'];
+  './quick/', './quick/index.html', './quick/manifest.webmanifest',
+  './quick-icon-192.png', './quick-icon-512.png', './quick-maskable-512.png', './quick-apple-touch-icon.png'];
 
 self.addEventListener('install', function (e) {
-  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FILES); }).then(function () { return self.skipWaiting(); }));
+  // each file on its own: one missing file must not stop the rest from being kept
+  e.waitUntil(caches.open(CACHE).then(function (c) {
+    return Promise.all(FILES.map(function (f) { return c.add(f).catch(function () {}); }));
+  }).then(function () { return self.skipWaiting(); }));
 });
 
 self.addEventListener('activate', function (e) {
