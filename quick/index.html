@@ -48,7 +48,8 @@
   var cfg = window.ANARA_CONFIG || {};
   var url = String(cfg.APP_URL || '').trim();
   var fullUrl = url;
-  if (url) url += (url.indexOf('?') < 0 ? '?' : '&') + 'quick=1';   // quick add
+  // quick add; "home" = the main launcher, so "Open the full app" can go back to it (Android and iPhone)
+  if (url) url += (url.indexOf('?') < 0 ? '?' : '&') + 'quick=1&home=' + encodeURIComponent(new URL('../', location.href).href);
   var $ = function (id) { return document.getElementById(id); };
   var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
