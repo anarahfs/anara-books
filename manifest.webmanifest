@@ -1,8 +1,7 @@
 {
-  "id": "./",
-  "name": "Anara Catat (quick add)",
-  "short_name": "Anara Catat",
-  "description": "Record money in / out fast. Works when the signal drops.",
+  "name": "Anara Books",
+  "short_name": "Anara Books",
+  "description": "Invoices, receipts and cash flow for Anara.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

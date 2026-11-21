@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "Anara Catat (quick add)",
+  "short_name": "Anara Catat",
+  "description": "Record money in / out fast. Works when the signal drops.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#1b2b5e",
+  "icons": [
+    { "src": "../quick-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "../quick-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "../quick-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

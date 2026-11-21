@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anara Catat</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#1b2b5e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Anara Catat">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="../quick-icon-192.png">
+<!-- Quick add (Catat cepat): same launcher, opens the app straight on the New record form. Its own icon has a gold + badge. -->
+<link rel="apple-touch-icon" href="../quick-apple-touch-icon.png">
+<style>
+  html,body{margin:0;height:100%;background:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:#131a2c}
+  #top{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:#1b2b5e;z-index:3}
+  #app{position:fixed;top:env(safe-area-inset-top);left:0;right:0;bottom:0;width:100%;height:calc(100% - env(safe-area-inset-top));border:0;display:none;background:#f2f4f8}
+  #splash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:#fff;z-index:2;padding:24px;text-align:center}
+  #splash img{width:190px;max-width:60vw}
+  .spin{width:26px;height:26px;border:3px solid #1b2b5e;border-right-color:transparent;border-radius:50%;animation:s .8s linear infinite}
+  @keyframes s{to{transform:rotate(360deg)}}
+  .msg{font-size:14px;color:#4a5368;max-width:320px;line-height:1.45}
+  .btn{display:inline-block;background:#1b2b5e;color:#fff;text-decoration:none;border:0;border-radius:12px;padding:12px 18px;font-weight:650;font-size:15px;cursor:pointer}
+  .btn.sec{background:#fff;color:#1b2b5e;border:1px solid #dde2eb}
+  #help{display:none;flex-direction:column;gap:10px;align-items:center}
+  #install{display:none}
+</style>
+</head>
+<body>
+<div id="top"></div>
+<div id="splash">
+  <img src="../logo.png" alt="Anara">
+  <div class="spin" id="spin"></div>
+  <div class="msg" id="msg"></div>
+  <div id="help">
+    <a class="btn" id="direct" href="#">Open Anara Books</a>
+    <button class="btn sec" id="install">Install on this phone</button>
+  </div>
+</div>
+<iframe id="app" title="Anara Catat" allow="clipboard-write; camera; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+<script src="../config.js"></script>
+<script>
+(function () {
+  var cfg = window.ANARA_CONFIG || {};
+  var url = String(cfg.APP_URL || '').trim();
+  var fullUrl = url;
+  if (url) url += (url.indexOf('?') < 0 ? '?' : '&') + 'quick=1';   // quick add
+  var $ = function (id) { return document.getElementById(id); };
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  var mode = cfg.MODE === 'frame' || cfg.MODE === 'redirect' ? cfg.MODE : (isIOS ? 'redirect' : 'frame');
+
+  // Remember the user's own choice ("Open directly") on this device
+  try { if (localStorage.getItem('anara_mode')) mode = localStorage.getItem('anara_mode'); } catch (e) {}
+
+  function showHelp(text) {
+    $('spin').style.display = 'none';
+    $('msg').innerHTML = text;
+    $('help').style.display = 'flex';
+  }
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js').catch(function () {});
+
+  // "Install" button for Android / desktop Chrome
+  var deferred = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); deferred = e;
+    if (!standalone) $('install').style.display = 'inline-block';
+  });
+  $('install').onclick = function () { if (deferred) { deferred.prompt(); deferred = null; $('install').style.display = 'none'; } };
+
+  if (!/^https:\/\/script\.google\.com\/.+\/exec/.test(url)) {
+    showHelp('The launcher is not set up yet.<br>Open <b>config.js</b> and paste your Apps Script web app link (ending in <b>/exec</b>).');
+    $('direct').style.display = 'none';
+    return;
+  }
+  $('direct').href = url;
+  $('direct').textContent = 'Open Anara Catat';
+  $('direct').onclick = function () { try { localStorage.setItem('anara_mode', 'redirect'); } catch (e) {} };
+
+  if (!navigator.onLine) {
+    showHelp('No signal. Anara Catat needs a little signal to open. Once it is open, records you save are kept on the phone and sent when the signal is back.');
+    window.addEventListener('online', function () { location.reload(); });
+    return;
+  }
+
+  // First visit in a normal browser tab: suggest installing before opening
+  if (!standalone && !sessionStorage.getItem('anara_seen')) {
+    sessionStorage.setItem('anara_seen', '1');
+    var tip = isIOS
+      ? 'Tip: tap <b>Share</b> → <b>Add to Home Screen</b> to install Anara Catat (quick add) with its own icon.'
+      : 'Tip: use <b>Install</b> (or browser menu → <b>Add to Home screen</b>) to get the Anara Catat icon.';
+    showHelp(tip);
+    $('direct').textContent = 'Continue to Anara Catat';
+    $('direct').onclick = function (e) { e.preventDefault(); start(); };
+    return;
+  }
+  start();
+
+  function start() {
+    if (mode === 'redirect') { location.replace(url); return; }
+    var frame = $('app');
+    frame.style.display = 'block';
+    // The app tells us when it has really loaded (not a sign-in or error page)
+    window.addEventListener('message', function (e) {
+      if (e.data && e.data.anara === 'ready') $('splash').style.display = 'none';
+      if (e.data && e.data.anara === 'open-full') location.href = '../';   // "Open the full app" button
+    });
+    frame.src = url;
+    // If the app hasn't appeared after a while (e.g. sign-in blocked), offer to open it directly
+    setTimeout(function () {
+      if ($('splash').style.display !== 'none') {
+        showHelp('Taking longer than usual. If it doesn\'t load, open it directly:');
+        $('direct').textContent = 'Open Anara Catat directly';
+        $('direct').onclick = function () { try { localStorage.setItem('anara_mode', 'redirect'); } catch (e) {} };
+      }
+    }, 12000);
+  }
+})();
+</script>
+</body>
+</html>
