@@ -40,3 +40,11 @@ The Anara icon then appears on the home screen and opens the app full screen.
 
 ## A note on security
 The app now allows itself to be shown inside another page (needed for the full-screen launcher). It still only works for signed-in Google accounts on your Users list, so nobody else can see data. Only share the launcher link with your staff.
+
+## Quick add icon: "Anara Catat"
+A second home-screen icon that opens the app straight on the **New record** form, for recording on the move. Same logo with a gold **+** badge.
+- Link: your launcher address + `quick/`, e.g. `https://anarahss-spec.github.io/anara-books/quick/`
+- Install it the same way as the main icon (open the link → Install / Add to Home Screen). Phones can have both icons.
+- It needs a little signal to **open**. Once open, records you save are **kept on the phone** and sent by themselves when the signal is back. Nothing is sent twice, even if the signal drops mid-send.
+- Needs the Apps Script update from 21 Nov 2026 or later (it understands `?quick=1`). With an older app version the icon just opens the normal app.
+- "Open the full app" at the bottom switches to the main Anara Books app.
