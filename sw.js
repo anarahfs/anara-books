@@ -1,5 +1,5 @@
 /* Keeps the launcher itself available offline. Your data always comes live from Google. */
-var CACHE = 'anara-launcher-v4';
+var CACHE = 'anara-launcher-v5';
 var FILES = ['./', './index.html', './config.js', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './maskable-512.png', './apple-touch-icon.png', './logo.png',
   './quick/', './quick/index.html', './quick/manifest.webmanifest',
