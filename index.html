@@ -97,6 +97,25 @@
   }
   start();
 
+  // Opened from Catat cepat's "Open the full app" (owner 24 Nov): after the app was closed / in the background
+  // for 3 minutes or more, it comes back as Catat cepat. Shorter breaks (taking a photo, a quick message) stay here.
+  if (/[?&]from=quick\b/.test(location.search)) {
+    try { sessionStorage.setItem('anara_from_quick', '1'); } catch (e) {}
+    try { history.replaceState(null, '', location.pathname); } catch (e) {}
+  }
+  var fromQuick = false; try { fromQuick = sessionStorage.getItem('anara_from_quick') === '1'; } catch (e) {}
+  if (fromQuick) {
+    var away = 0;
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { away = Date.now(); return; }
+      if (away && Date.now() - away >= 3 * 60000) {
+        try { sessionStorage.removeItem('anara_from_quick'); } catch (e) {}
+        location.replace(new URL('quick/', location.href).href);
+      }
+      away = 0;
+    });
+  }
+
   function start() {
     if (mode === 'redirect') { location.replace(url); return; }
     var frame = $('app');
